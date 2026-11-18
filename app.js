@@ -15,7 +15,7 @@ try{if(C.supabaseUrl&&C.supabaseKey&&window.supabase)sb=window.supabase.createCl
  var links=pages.map(function(p){return"<a href='"+p[0]+"'"+(p[0]==cur||(cur==""&&p[0]=="index.html")?" aria-current='page'":"")+">"+p[1]+"</a>"}).join("");
  var h=$("hdr");if(h)h.outerHTML="<header class='top'><div class='w'><a class='brand' href='index.html'>"+esc(C.name)+"</a><nav class='nav' aria-label='Menu'>"+links+"<a class='acc' id='acc' href='login.html'>Masuk</a></nav></div></header>";
  var f=$("ftr");if(f)f.outerHTML="<footer><div class='w'><div><b class='px' style='color:var(--em)'>"+esc(C.name)+"</b><p style='margin:8px 0 0;max-width:340px'>Bukan produk resmi Minecraft dan tidak berafiliasi dengan Mojang atau Microsoft.</p></div><div><a href='"+esc(C.discord)+"'>Discord</a> · <a href='"+esc(C.tiktok)+"'>TikTok</a> · <a href='"+esc(C.youtube)+"'>YouTube</a></div></div></footer><div class='toast' id='toast' role='status'></div>";
- if(sb)sb.auth.getSession().then(function(r){if(r.data&&r.data.session){var a=$("acc");a.textContent="Akun";a.href="akun.html"}});
+ if(sb)sb.auth.getSession().then(function(r){if(r.data&&r.data.session){var a=$("acc");a.textContent="Akun";a.href="akun.html";sb.from("admins").select("user_id").eq("user_id",r.data.session.user.id).maybeSingle().then(function(x){if(x.data){var l=el("a","","Admin");l.href="admin.html";a.parentNode.insertBefore(l,a)}})}});
  [].forEach.call(document.querySelectorAll("[data-copy]"),function(b){b.onclick=copyIp});
  [].forEach.call(document.querySelectorAll("[data-ip]"),function(e){e.textContent=C.ip});
  [].forEach.call(document.querySelectorAll("[data-dc]"),function(e){e.href=C.discord});
@@ -45,3 +45,14 @@ function renderJoin(tabId,ipId,stepsId){put(tabId,function(t){
  var p={"Java (PC)":[C.ip,["Buka Minecraft Java, pilih <b>Multiplayer</b>.","Klik <b>Add Server</b>, isi alamat server di atas.","Masuk, lalu ketik <b>/register</b> di chat."]],
  "Bedrock (HP/Konsol)":[C.ip+" · Port "+C.bedrockPort,["Buka Minecraft Bedrock, pilih <b>Play → Servers → Add Server</b>.","Isi alamat "+esc(C.ip)+" dan port <b>"+C.bedrockPort+"</b>.","Masuk, lalu ketik <b>/register</b> di chat."]]};
  tabs(t,Object.keys(p),function(k){$(ipId).textContent=p[k][0];$(stepsId).innerHTML=p[k][1].map(function(s){return"<li class='box'><span>"+s+"</span></li>"}).join("")})})}
+
+/* konfigurasi dari database (diedit lewat admin.html) */
+var R=[];
+["renderModes","renderRanks","renderCoins","renderVotes","renderNews","renderStaff","renderFaq","renderRules","renderLb","renderJoin"].forEach(function(n){var f=window[n];window[n]=function(){R.push([f,arguments]);return f.apply(null,arguments)}});
+var cfgP=sb?sb.from("site_config").select("data").eq("id",1).maybeSingle().then(function(r){var d=r.data&&r.data.data;if(!d)return;
+ Object.keys(d).forEach(function(k){if(k!="supabaseUrl"&&k!="supabaseKey")C[k]=d[k]});
+ R.forEach(function(x){[].forEach.call(x[1],function(id){var e=$(id);if(e)e.innerHTML=""});x[0].apply(null,x[1])});
+ [].forEach.call(document.querySelectorAll(".brand"),function(e){e.textContent=C.name});
+ [].forEach.call(document.querySelectorAll("[data-ip]"),function(e){e.textContent=C.ip});
+ [].forEach.call(document.querySelectorAll("[data-dc]"),function(e){e.href=C.discord})
+}).catch(function(){}):Promise.resolve();
