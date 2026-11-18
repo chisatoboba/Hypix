@@ -4,33 +4,34 @@
 <div id="msg"></div>
 <div class="tabs" id="mTabs" role="tablist"><button class="tab" type="button" role="tab" aria-selected="true" id="tL">Masuk</button><button class="tab" type="button" role="tab" aria-selected="false" id="tR">Daftar</button></div>
 <form id="f" novalidate>
-<label class="field" id="mcw" hidden><span>Nickname Minecraft</span><input id="mc" autocomplete="username" maxlength="16" placeholder="contoh: Steve_123"></label>
+
 <label class="field"><span>Email</span><input id="em" type="email" autocomplete="email" required placeholder="kamu@email.com"></label>
 <label class="field"><span>Password</span><input id="pw" type="password" autocomplete="current-password" required minlength="6" placeholder="Minimal 6 karakter"></label>
 <button class="btn full" id="go" type="submit">Masuk</button>
 </form>
 <p style="text-align:center;margin:14px 0 0"><button class="linkbtn" id="rs" type="button">Lupa password?</button></p>
 <div class="sep">atau</div>
+<button class="btn full" id="gb" type="button" style="background:#fff;color:#1f1f1f;margin-bottom:14px">Lanjut dengan Google</button>
 <button class="btn p full" id="dcb" type="button">Lanjut dengan Discord</button>
 </div></div></section>
 <div id="ftr"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="config.js"></script><script src="app.js"></script><script>
 var mode="L",$m=$("msg");
 function note(t,c){$m.innerHTML=t?"<div class='alert "+c+"'>"+esc(t)+"</div>":""}
 if(!sb)note("Login belum dihubungkan. Isi supabaseUrl dan supabaseKey di config.js (lihat README.md).","info");
-function setMode(m){mode=m;$("tL").setAttribute("aria-selected",m=="L");$("tR").setAttribute("aria-selected",m=="R");$("mcw").hidden=m!="R";$("go").textContent=m=="L"?"Masuk":"Buat akun";$("pw").autocomplete=m=="L"?"current-password":"new-password";note("")}
+function setMode(m){mode=m;$("tL").setAttribute("aria-selected",m=="L");$("tR").setAttribute("aria-selected",m=="R");$("go").textContent=m=="L"?"Masuk":"Buat akun";$("pw").autocomplete=m=="L"?"current-password":"new-password";note("")}
 $("tL").onclick=function(){setMode("L")};$("tR").onclick=function(){setMode("R")};
 function msgErr(e){var m=(e&&e.message)||"Terjadi kesalahan";if(/Invalid login/i.test(m))return"Email atau password salah.";if(/already registered/i.test(m))return"Email ini sudah terdaftar. Silakan masuk.";if(/Password should/i.test(m))return"Password minimal 6 karakter.";return m}
 $("f").onsubmit=function(ev){ev.preventDefault();if(!sb)return note("Login belum dihubungkan.","err");
- var email=$("em").value.trim(),pw=$("pw").value,mc=$("mc").value.trim();
+ var email=$("em").value.trim(),pw=$("pw").value;
  if(!email||!pw)return note("Isi email dan password.","err");
- if(mode=="R"&&!/^[A-Za-z0-9_]{3,16}$/.test(mc))return note("Nickname 3–16 karakter: huruf, angka, atau garis bawah.","err");
  $("go").disabled=true;
- var p=mode=="L"?sb.auth.signInWithPassword({email:email,password:pw}):sb.auth.signUp({email:email,password:pw,options:{data:{mc_name:mc},emailRedirectTo:location.origin+location.pathname.replace("login.html","akun.html")}});
+ var p=mode=="L"?sb.auth.signInWithPassword({email:email,password:pw}):sb.auth.signUp({email:email,password:pw,options:{emailRedirectTo:location.origin+location.pathname.replace("login.html","akun.html")}});
  p.then(function(r){$("go").disabled=false;if(r.error)return note(msgErr(r.error),"err");
   if(mode=="R"&&!r.data.session)return note("Akun dibuat. Cek email-mu untuk konfirmasi, lalu masuk.","ok");
   location.href="akun.html"})};
-$("dcb").onclick=function(){if(!sb)return note("Login belum dihubungkan.","err");
- sb.auth.signInWithOAuth({provider:"discord",options:{redirectTo:location.origin+location.pathname.replace("login.html","akun.html")}}).then(function(r){if(r.error)note(msgErr(r.error),"err")})};
+function oauth(provider){if(!sb)return note("Login belum dihubungkan.","err");
+ sb.auth.signInWithOAuth({provider:provider,options:{redirectTo:location.origin+location.pathname.replace("login.html","akun.html")}}).then(function(r){if(r.error)note(msgErr(r.error),"err")})}
+$("dcb").onclick=function(){oauth("discord")};$("gb").onclick=function(){oauth("google")};
 $("rs").onclick=function(){if(!sb)return note("Login belum dihubungkan.","err");var email=$("em").value.trim();if(!email)return note("Isi email dulu, lalu tekan Lupa password.","err");
  sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname.replace("login.html","akun.html")}).then(function(r){note(r.error?msgErr(r.error):"Link reset password sudah dikirim ke email-mu.",r.error?"err":"ok")})};
 if(sb)sb.auth.getSession().then(function(r){if(r.data.session)location.href="akun.html"});</script></body></html>

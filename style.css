@@ -1,3 +1,4 @@
+[hidden]{display:none!important}
 :root{--n0:#0b0d2b;--n1:#14173f;--n2:#1f2357;--n3:#2c3175;--em:#3ddc84;--gold:#ffc83d;--pink:#ff5d8f;--sky:#5cc8ff;--tx:#f4f6ff;--mu:#aab0d9;--bd:#05061a;color-scheme:dark}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:70px}
 body{margin:0;background:var(--n0);color:var(--tx);font:500 16px/1.6 Nunito,system-ui,sans-serif;padding-bottom:env(safe-area-inset-bottom,0)}
