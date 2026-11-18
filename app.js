@@ -37,6 +37,7 @@ function put(id,fn){var b=$(id);if(b)fn(b)}
 function renderModes(id){put(id,function(b){C.modes.forEach(function(m){b.appendChild(el("article","box mode","<div class='ico'>"+m[0]+"</div><h3>"+esc(m[1])+"</h3><p>"+esc(m[2])+"</p>"))})})}
 function renderRanks(id){put(id,function(b){C.ranks.forEach(function(r){b.appendChild(el("article","box rank"+(r.hot?" hot":""),(r.hot?"<span class='tag'>POPULER</span>":"")+"<h3 style='color:"+r.c+"'>"+esc(r.n)+"</h3><div class='price'>"+esc(r.p)+"</div><ul>"+r.f.map(function(f){return"<li>"+esc(f)+"</li>"}).join("")+"</ul><a class='btn full "+(r.hot?"g":"")+"' href='"+esc(C.store)+"'>Beli "+esc(r.n)+"</a>"))})})}
 function renderCoins(id){put(id,function(b){C.coins.forEach(function(c){b.appendChild(el("div","box vote","<div><b>"+esc(c[0])+"</b><div class='val'>"+esc(c[1])+"</div></div><a class='btn d' href='"+esc(C.store)+"'>Beli</a>"))})})}
+function renderPays(id){put(id,function(b){C.pays.forEach(function(p){b.appendChild(el("div","box pay","<div class='ico'>"+esc(p[0])+"</div><div><b>"+esc(p[1])+"</b><small>"+esc(p[2])+"</small></div>"))})})}
 function renderVotes(id){put(id,function(b){C.votes.forEach(function(v){b.appendChild(el("div","box vote","<b>"+esc(v[0])+"</b><a class='btn d' href='"+esc(v[1])+"'>Vote</a>"))})})}
 function renderNews(id){put(id,function(b){C.news.forEach(function(n){b.appendChild(el("article","box news","<time>"+esc(n[0])+"</time><h3>"+esc(n[1])+"</h3><p>"+esc(n[2])+"</p>"))})})}
 function face(s){var p=s[3]||"";if(/^mc:/i.test(p))p="https://mc-heads.net/avatar/"+encodeURIComponent(p.slice(3).trim())+"/128";return p?"<img class='face' alt='' src='"+esc(p)+"'>":"<span class='face' style='background:"+esc(s[2])+"'></span>"}
@@ -52,7 +53,7 @@ function renderJoin(tabId,ipId,stepsId){put(tabId,function(t){
 
 /* konfigurasi dari database (diedit lewat admin.html) */
 var R=[];
-["renderModes","renderRanks","renderCoins","renderVotes","renderNews","renderStaff","renderFaq","renderRules","renderLb","renderJoin"].forEach(function(n){var f=window[n];window[n]=function(){R.push([f,arguments]);return f.apply(null,arguments)}});
+["renderModes","renderRanks","renderCoins","renderPays","renderVotes","renderNews","renderStaff","renderFaq","renderRules","renderLb","renderJoin"].forEach(function(n){var f=window[n];window[n]=function(){R.push([f,arguments]);return f.apply(null,arguments)}});
 var cfgP=sb?sb.from("site_config").select("data").eq("id",1).maybeSingle().then(function(r){var d=r.data&&r.data.data;if(!d)return;
  Object.keys(d).forEach(function(k){if(k!="supabaseUrl"&&k!="supabaseKey")C[k]=d[k]});
  R.forEach(function(x){[].forEach.call(x[1],function(id){var e=$(id);if(e)e.innerHTML=""});x[0].apply(null,x[1])});
