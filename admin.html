@@ -9,17 +9,19 @@ var D,cur,bad=false,$m=$("msg");
 function note(t,c){$m.innerHTML=t?"<div class='alert "+c+"'>"+esc(t)+"</div>":""}
 var G=[["name","Nama server"],["ip","IP server"],["javaPort","Port Java"],["bedrockPort","Port Bedrock"],["version","Versi"],["discord","Link Discord"],["tiktok","Link TikTok"],["youtube","Link YouTube"],["store","Link pembayaran (Store)"]];
 var S={"Umum":0,"Mode":"modes","Rank":"ranks","Koin":"coins","Peringkat":"lb","Vote":"votes","Berita":"news","Staf":"staff","FAQ":"faq","Aturan":"rules"};
-var H={modes:["Ikon","Nama","Deskripsi"],coins:["Paket","Harga"],votes:["Nama","Link"],news:["Tanggal","Judul","Isi"],staff:["Jabatan (Owner, Developer, Admin, ...)","Nama","Warna (#hex)"],faq:["Pertanyaan","Jawaban"],rules:["Aturan"]};
+var H={modes:["Ikon","Nama","Deskripsi"],coins:["Paket","Harga"],votes:["Nama","Link"],news:["Tanggal","Judul","Isi"],staff:["Jabatan (Owner, Developer, Admin, ...)","Nama","Warna (#hex)","Foto: link gambar, atau mc:NamaMinecraft"],faq:["Pertanyaan","Jawaban"],rules:["Aturan"]};
 function show(l){cur=S[l];bad=false;note("");var b=$("ed");b.innerHTML="";
  if(!cur){G.forEach(function(g){var f=el("label","field","<span>"+g[1]+"</span>"),n=el("input");n.value=D[g[0]];n.oninput=function(){D[g[0]]=typeof C[g[0]]=="number"?Number(n.value)||0:n.value};f.appendChild(n);b.appendChild(f)});return}
  if(cur=="ranks"||cur=="lb"){var t=el("textarea");t.style.cssText="min-height:380px;font-family:monospace";t.value=JSON.stringify(D[cur],null,1);var k=cur;t.oninput=function(){try{D[k]=JSON.parse(t.value);bad=false}catch(e){bad=true}};
   b.appendChild(el("p","",cur=="ranks"?"Format JSON. n = nama rank, p = harga, c = warna, f = daftar fitur, hot:1 = label populer.":"Format JSON. Satu tab per judul, isinya daftar [nama pemain, nilai]."));b.appendChild(t);return}
  var rows=D[cur],h=H[cur],big=["modes","news","faq"].indexOf(cur)>=0;
  function draw(){b.innerHTML="";rows.forEach(function(r,i){var w=el("div","box");w.style.cssText="padding:14px;margin-bottom:14px";
-  h.forEach(function(nm,j){var f=el("label","field","<span>"+esc(nm)+"</span>"),n=el(big&&j==h.length-1?"textarea":"input");n.value=cur=="rules"?r:r[j];n.oninput=function(){if(cur=="rules")rows[i]=n.value;else r[j]=n.value};f.appendChild(n);w.appendChild(f)});
+  h.forEach(function(nm,j){var f=el("label","field","<span>"+esc(nm)+"</span>"),n=el(big&&j==h.length-1?"textarea":"input");n.value=cur=="rules"?r:(r[j]||"");n.oninput=function(){if(cur=="rules")rows[i]=n.value;else r[j]=n.value};f.appendChild(n);w.appendChild(f)});
+  if(cur=="staff"){var u=el("input");u.type="file";u.accept="image/*";u.onchange=function(){up(u.files[0],function(url){r[3]=url;draw()})};w.appendChild(el("div","","Atau unggah foto dari galeri:"));u.style.marginBottom="14px";w.appendChild(u)}
   var d=el("button","btn d","Hapus");d.type="button";d.onclick=function(){rows.splice(i,1);draw()};w.appendChild(d);b.appendChild(w)});
   var a=el("button","btn g","+ Tambah");a.type="button";a.onclick=function(){rows.push(cur=="rules"?"":h.map(function(){return""}));draw()};b.appendChild(a)}
  draw()}
+function up(f,cb){if(!f)return;var im=new Image();im.onload=function(){var c=document.createElement("canvas");c.width=c.height=256;var m=Math.min(im.width,im.height);c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,256,256);c.toBlob(function(bl){var p="staff/"+Date.now()+".jpg";sb.storage.from("avatars").upload(p,bl,{contentType:"image/jpeg"}).then(function(r){if(r.error)return note("Gagal unggah: "+r.error.message,"err");cb(sb.storage.from("avatars").getPublicUrl(p).data.publicUrl);note("Foto terunggah. Tekan Simpan perubahan agar tampil di website.","ok")})},"image/jpeg",.85)};im.src=URL.createObjectURL(f)}
 $("sv").onclick=function(){if(bad)return note("JSON belum valid. Perbaiki dulu sebelum menyimpan.","err");
  sb.from("site_config").upsert({id:1,data:D,updated_at:new Date().toISOString()}).then(function(r){if(r.error)return note(r.error.message,"err");note("Tersimpan. Perubahan sudah tampil di semua halaman.","ok");toast("Tersimpan!")})};
 $("rst").onclick=function(){if(!confirm("Hapus semua perubahan dan kembali ke isi config.js?"))return;
