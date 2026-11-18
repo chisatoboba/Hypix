@@ -13,8 +13,11 @@ try{if(C.supabaseUrl&&C.supabaseKey&&window.supabase)sb=window.supabase.createCl
  var pages=[["index.html","Beranda"],["store.html","Store"],["ranking.html","Peringkat"],["info.html","Info"]];
  var cur=location.pathname.split("/").pop()||"index.html";
  var links=pages.map(function(p){return"<a href='"+p[0]+"'"+(p[0]==cur||(cur==""&&p[0]=="index.html")?" aria-current='page'":"")+">"+p[1]+"</a>"}).join("");
- var h=$("hdr");if(h)h.outerHTML="<header class='top'><div class='w'><a class='brand' href='index.html'>"+esc(C.name)+"</a><nav class='nav' aria-label='Menu'>"+links+"<a class='acc' id='acc' href='login.html'>Masuk</a></nav></div></header>";
+ var h=$("hdr");if(h)h.outerHTML="<header class='top'><div class='w'><a class='brand' href='index.html'>"+esc(C.name)+"</a><button class='burger' id='bg' type='button' aria-label='Menu' aria-expanded='false' aria-controls='nv'><i></i><i></i><i></i></button><nav class='nav' id='nv' aria-label='Menu' hidden>"+links+"<a class='acc' id='acc' href='login.html'>Masuk</a></nav></div></header>";
  var f=$("ftr");if(f)f.outerHTML="<footer><div class='w'><div><b class='px' style='color:var(--em)'>"+esc(C.name)+"</b><p style='margin:8px 0 0;max-width:340px'>Bukan produk resmi Minecraft dan tidak berafiliasi dengan Mojang atau Microsoft.</p></div><div><a href='"+esc(C.discord)+"'>Discord</a> · <a href='"+esc(C.tiktok)+"'>TikTok</a> · <a href='"+esc(C.youtube)+"'>YouTube</a></div></div></footer><div class='toast' id='toast' role='status'></div>";
+ var bg=$("bg"),nv=$("nv");if(bg){bg.onclick=function(){var o=nv.hidden;nv.hidden=!o;bg.setAttribute("aria-expanded",o)};
+  document.addEventListener("click",function(e){if(!nv.hidden&&!e.target.closest(".top"))bg.click()});
+  document.addEventListener("keydown",function(e){if(e.key=="Escape"&&!nv.hidden)bg.click()})}
  if(sb)sb.auth.getSession().then(function(r){if(r.data&&r.data.session){var a=$("acc");a.textContent="Akun";a.href="akun.html";sb.from("admins").select("user_id").eq("user_id",r.data.session.user.id).maybeSingle().then(function(x){if(x.data){var l=el("a","","Admin");l.href="admin.html";a.parentNode.insertBefore(l,a)}})}});
  [].forEach.call(document.querySelectorAll("[data-copy]"),function(b){b.onclick=copyIp});
  [].forEach.call(document.querySelectorAll("[data-ip]"),function(e){e.textContent=C.ip});
@@ -36,7 +39,8 @@ function renderRanks(id){put(id,function(b){C.ranks.forEach(function(r){b.append
 function renderCoins(id){put(id,function(b){C.coins.forEach(function(c){b.appendChild(el("div","box vote","<div><b>"+esc(c[0])+"</b><div class='val'>"+esc(c[1])+"</div></div><a class='btn d' href='"+esc(C.store)+"'>Beli</a>"))})})}
 function renderVotes(id){put(id,function(b){C.votes.forEach(function(v){b.appendChild(el("div","box vote","<b>"+esc(v[0])+"</b><a class='btn d' href='"+esc(v[1])+"'>Vote</a>"))})})}
 function renderNews(id){put(id,function(b){C.news.forEach(function(n){b.appendChild(el("article","box news","<time>"+esc(n[0])+"</time><h3>"+esc(n[1])+"</h3><p>"+esc(n[2])+"</p>"))})})}
-function renderStaff(id){put(id,function(b){C.staff.forEach(function(s){b.appendChild(el("div","box staff","<span class='face' style='background:"+s[2]+"'></span><small>"+esc(s[1])+"</small><span class='badge' style='background:"+s[2]+";color:#111'>"+esc(s[0])+"</span>"))})})}
+function face(s){var p=s[3]||"";if(/^mc:/i.test(p))p="https://mc-heads.net/avatar/"+encodeURIComponent(p.slice(3).trim())+"/128";return p?"<img class='face' alt='' src='"+esc(p)+"'>":"<span class='face' style='background:"+esc(s[2])+"'></span>"}
+function renderStaff(id){put(id,function(b){C.staff.forEach(function(s){b.appendChild(el("div","box staff",face(s)+"<small>"+esc(s[1])+"</small><span class='badge' style='background:"+s[2]+";color:#111'>"+esc(s[0])+"</span>"))})})}
 function renderFaq(id){put(id,function(b){C.faq.forEach(function(f){b.appendChild(el("details","box","<summary>"+esc(f[0])+"</summary><p>"+esc(f[1])+"</p>"))})})}
 function renderRules(id){put(id,function(b){C.rules.forEach(function(r){b.appendChild(el("li","",esc(r)))})})}
 function tabs(box,items,cb){items.forEach(function(t,i){var b=el("button","tab",esc(t));b.type="button";b.setAttribute("role","tab");b.setAttribute("aria-selected",i==0);b.onclick=function(){[].forEach.call(box.children,function(x){x.setAttribute("aria-selected",x==b)});cb(t)};box.appendChild(b)});cb(items[0])}
