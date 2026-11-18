@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#0b0d2b"><title>Admin – CraftNusa</title><link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"></head><body><div id="hdr"></div>
+<div class="page"><div class="w"><h1>Panel admin</h1><p>Ubah isi website. Perubahan langsung tampil untuk semua pemain setelah disimpan.</p></div></div>
+<section><div class="w"><div id="msg"></div><div id="app" hidden>
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px"><button class="btn" id="sv" type="button">Simpan perubahan</button><button class="btn d" id="rst" type="button">Kembalikan ke bawaan</button></div>
+<div class="tabs" id="tb" role="tablist"></div><div id="ed"></div>
+</div></div></section>
+<div id="ftr"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="config.js"></script><script src="app.js"></script><script>
+var D,cur,bad=false,$m=$("msg");
+function note(t,c){$m.innerHTML=t?"<div class='alert "+c+"'>"+esc(t)+"</div>":""}
+var G=[["name","Nama server"],["ip","IP server"],["javaPort","Port Java"],["bedrockPort","Port Bedrock"],["version","Versi"],["discord","Link Discord"],["tiktok","Link TikTok"],["youtube","Link YouTube"],["store","Link pembayaran (Store)"]];
+var S={"Umum":0,"Mode":"modes","Rank":"ranks","Koin":"coins","Peringkat":"lb","Vote":"votes","Berita":"news","Staf":"staff","FAQ":"faq","Aturan":"rules"};
+var H={modes:["Ikon","Nama","Deskripsi"],coins:["Paket","Harga"],votes:["Nama","Link"],news:["Tanggal","Judul","Isi"],staff:["Jabatan (Owner, Developer, Admin, ...)","Nama","Warna (#hex)"],faq:["Pertanyaan","Jawaban"],rules:["Aturan"]};
+function show(l){cur=S[l];bad=false;note("");var b=$("ed");b.innerHTML="";
+ if(!cur){G.forEach(function(g){var f=el("label","field","<span>"+g[1]+"</span>"),n=el("input");n.value=D[g[0]];n.oninput=function(){D[g[0]]=typeof C[g[0]]=="number"?Number(n.value)||0:n.value};f.appendChild(n);b.appendChild(f)});return}
+ if(cur=="ranks"||cur=="lb"){var t=el("textarea");t.style.cssText="min-height:380px;font-family:monospace";t.value=JSON.stringify(D[cur],null,1);var k=cur;t.oninput=function(){try{D[k]=JSON.parse(t.value);bad=false}catch(e){bad=true}};
+  b.appendChild(el("p","",cur=="ranks"?"Format JSON. n = nama rank, p = harga, c = warna, f = daftar fitur, hot:1 = label populer.":"Format JSON. Satu tab per judul, isinya daftar [nama pemain, nilai]."));b.appendChild(t);return}
+ var rows=D[cur],h=H[cur],big=["modes","news","faq"].indexOf(cur)>=0;
+ function draw(){b.innerHTML="";rows.forEach(function(r,i){var w=el("div","box");w.style.cssText="padding:14px;margin-bottom:14px";
+  h.forEach(function(nm,j){var f=el("label","field","<span>"+esc(nm)+"</span>"),n=el(big&&j==h.length-1?"textarea":"input");n.value=cur=="rules"?r:r[j];n.oninput=function(){if(cur=="rules")rows[i]=n.value;else r[j]=n.value};f.appendChild(n);w.appendChild(f)});
+  var d=el("button","btn d","Hapus");d.type="button";d.onclick=function(){rows.splice(i,1);draw()};w.appendChild(d);b.appendChild(w)});
+  var a=el("button","btn g","+ Tambah");a.type="button";a.onclick=function(){rows.push(cur=="rules"?"":h.map(function(){return""}));draw()};b.appendChild(a)}
+ draw()}
+$("sv").onclick=function(){if(bad)return note("JSON belum valid. Perbaiki dulu sebelum menyimpan.","err");
+ sb.from("site_config").upsert({id:1,data:D,updated_at:new Date().toISOString()}).then(function(r){if(r.error)return note(r.error.message,"err");note("Tersimpan. Perubahan sudah tampil di semua halaman.","ok");toast("Tersimpan!")})};
+$("rst").onclick=function(){if(!confirm("Hapus semua perubahan dan kembali ke isi config.js?"))return;
+ sb.from("site_config").delete().eq("id",1).then(function(r){if(r.error)return note(r.error.message,"err");location.reload()})};
+if(!sb)note("Login belum dihubungkan di config.js.","info");
+else sb.auth.getSession().then(function(r){var s=r.data.session;if(!s){location.href="login.html";return}
+ sb.from("admins").select("user_id").eq("user_id",s.user.id).maybeSingle().then(function(x){
+  if(!x.data)return note("Akun ini bukan admin.","err");
+  cfgP.then(function(){D=JSON.parse(JSON.stringify(C));delete D.supabaseUrl;delete D.supabaseKey;$("app").hidden=false;tabs($("tb"),Object.keys(S),show)})})});
+</script></body></html>
