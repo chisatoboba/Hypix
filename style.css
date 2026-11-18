@@ -95,3 +95,5 @@ img.face{object-fit:cover;background:var(--n3)}
 .top .nav a[aria-current]{color:var(--tx);border-bottom:2px solid var(--em)}
 .top .nav .acc{margin:14px 0 0;text-align:center;border:3px solid var(--bd)}
 .staff .face{display:block;width:min(100%,170px);height:auto;aspect-ratio:1;margin:0 auto 14px;border-width:3px}
+
+.pay{display:flex;gap:14px;align-items:center;padding:14px 16px}.pay b{display:block}.pay small{color:var(--mu);display:block;line-height:1.4}.pay .ico{flex:none}
