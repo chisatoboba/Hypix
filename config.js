@@ -3,7 +3,7 @@ var C={
  name:"Hypix Reborn", ip:"play.craftnusa.id", javaPort:25565, bedrockPort:19132, version:"1.21",
  discord:"https://discord.gg/", tiktok:"#", youtube:"#", store:"#",
  /* Isi dari Supabase: Project Settings → API (lihat README.md) */
- supabaseUrl:"https://zehmmuwcpxqeqablrmij.supabase.co/rest/v1/", supabaseKey:"sb_publishable_K2Uj9KWf-MmZ6auOX1SVyw_-7-hwuEM",
+ supabaseUrl:"https://zehmmuwcpxqeqablrmij.supabase.co", supabaseKey:"sb_publishable_K2Uj9KWf-MmZ6auOX1SVyw_-7-hwuEM",
  modes:[
   ["⛏️","Survival","Claim tanahmu, bangun rumah, dan berdagang. Anti-grief aktif."],
   ["☁️","Skyblock","Mulai dari satu pulau, naikkan level, dan kuasai ekonomi."],
