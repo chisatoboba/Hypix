@@ -94,3 +94,4 @@ img.face{object-fit:cover;background:var(--n3)}
 .top .nav a{padding:14px 12px;font-size:17px;border-bottom:2px solid var(--n2)}
 .top .nav a[aria-current]{color:var(--tx);border-bottom:2px solid var(--em)}
 .top .nav .acc{margin:14px 0 0;text-align:center;border:3px solid var(--bd)}
+.staff .face{display:block;width:min(100%,170px);height:auto;aspect-ratio:1;margin:0 auto 14px;border-width:3px}
