@@ -80,8 +80,13 @@ function openBuy(item,price){
  m.onclick=function(e){if(e.target==m)close()};
  $("bno").onclick=close;
  function pick(i){sel=i;[].forEach.call($("bm").children,function(x,j){x.setAttribute("aria-selected",j==i)});var p=C.pays[i];
-  $("ba").innerHTML="<small>Transfer tepat "+esc(price)+" ke "+esc(p[1])+":</small><div class='num'>"+esc(p[2])+"</div>"+(p[3]?"<small>a.n. "+esc(p[3])+"</small>":"")+"<button type='button' class='btn d' id='bc' style='margin-top:10px;padding:8px 14px;font-size:13px'>Salin nomor</button>";
-  $("bc").onclick=function(){var v=String(p[2]);copyTxt(/^[\d\s-]+$/.test(v)?v.replace(/[\s-]/g,""):v)}}
+  $("ba").innerHTML="<small>Bayar tepat "+esc(price)+" lewat "+esc(p[1])+(p[4]?" (scan dengan e-wallet atau m-banking apa saja):":":")+"</small>"+
+   (p[2]?"<div class='num'>"+esc(p[2])+"</div>":"")+
+   (p[4]?"<img class='qr' alt='Kode QR "+esc(p[1])+"' src='"+esc(p[4])+"'>":"")+
+   (p[3]?"<small>a.n. "+esc(p[3])+"</small>":"")+
+   (p[2]?"<button type='button' class='btn d' id='bc' style='margin-top:10px;padding:8px 14px;font-size:13px'>Salin nomor</button>":"")+
+   (p[4]?"<a class='btn d' target='_blank' rel='noopener' style='margin-top:10px;padding:8px 14px;font-size:13px' href='"+esc(p[4])+"'>Buka / simpan gambar QR</a>":"");
+  if($("bc"))$("bc").onclick=function(){var v=String(p[2]);copyTxt(/^[\d\s-]+$/.test(v)?v.replace(/[\s-]/g,""):v)}}
  C.pays.forEach(function(p,i){var b=el("button","tab",esc(p[0])+" "+esc(p[1]));b.type="button";b.setAttribute("role","tab");b.onclick=function(){pick(i)};$("bm").appendChild(b)});
  pick(0);
  if(sb)sb.auth.getSession().then(function(r){var s=r.data&&r.data.session;if(s)sb.from("profiles").select("mc_name").eq("id",s.user.id).maybeSingle().then(function(x){var n=$("bn");if(n&&x.data&&x.data.mc_name&&!n.value)n.value=x.data.mc_name})});
@@ -95,6 +100,6 @@ function openBuy(item,price){
   sb.auth.getSession().then(function(r){var s=r.data&&r.data.session;if(!s){fallback();return}
    sb.from("tickets").insert({subject:subj,message:txt}).then(function(r2){
     if(r2.error){$("bok").disabled=false;x.innerHTML="<div class='alert err'>"+esc(r2.error.message)+"</div>";return}
-    x.innerHTML="<div class='alert ok'>Pesanan tercatat sebagai tiket di halaman Akun. Kirim bukti pembayaran (screenshot) lewat Discord agar cepat diproses.</div><a class='btn p full' href='"+esc(C.discord)+"'>Kirim bukti di Discord</a>";
+    x.innerHTML="<div class='alert ok'>Pesanan tercatat sebagai tiket. Buka tiketnya untuk mengunggah bukti transfer.</div><a class='btn full' href='akun.html#bukti'>Unggah bukti transfer</a>";
     $("bok").hidden=true;$("bno").textContent="Tutup"})})}}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-buy]");if(b){e.preventDefault();openBuy(b.getAttribute("data-buy"),b.getAttribute("data-price"))}});
