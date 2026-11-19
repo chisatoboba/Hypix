@@ -35,9 +35,9 @@ function checkStatus(){var s=$("stt");if(!s)return;var c=new AbortController(),t
 /* renderers */
 function put(id,fn){var b=$(id);if(b)fn(b)}
 function renderModes(id){put(id,function(b){C.modes.forEach(function(m){b.appendChild(el("article","box mode","<div class='ico'>"+m[0]+"</div><h3>"+esc(m[1])+"</h3><p>"+esc(m[2])+"</p>"))})})}
-function renderRanks(id){put(id,function(b){C.ranks.forEach(function(r){b.appendChild(el("article","box rank"+(r.hot?" hot":""),(r.hot?"<span class='tag'>POPULER</span>":"")+"<h3 style='color:"+r.c+"'>"+esc(r.n)+"</h3><div class='price'>"+esc(r.p)+"</div><ul>"+r.f.map(function(f){return"<li>"+esc(f)+"</li>"}).join("")+"</ul><a class='btn full "+(r.hot?"g":"")+"' href='"+esc(C.store)+"'>Beli "+esc(r.n)+"</a>"))})})}
-function renderCoins(id){put(id,function(b){C.coins.forEach(function(c){b.appendChild(el("div","box vote","<div><b>"+esc(c[0])+"</b><div class='val'>"+esc(c[1])+"</div></div><a class='btn d' href='"+esc(C.store)+"'>Beli</a>"))})})}
-function renderPays(id){put(id,function(b){C.pays.forEach(function(p){b.appendChild(el("div","box pay","<div class='ico'>"+esc(p[0])+"</div><div><b>"+esc(p[1])+"</b><small>"+esc(p[2])+"</small></div>"))})})}
+function renderRanks(id){put(id,function(b){C.ranks.forEach(function(r){b.appendChild(el("article","box rank"+(r.hot?" hot":""),(r.hot?"<span class='tag'>POPULER</span>":"")+"<h3 style='color:"+r.c+"'>"+esc(r.n)+"</h3><div class='price'>"+esc(r.p)+"</div><ul>"+r.f.map(function(f){return"<li>"+esc(f)+"</li>"}).join("")+"</ul><button type='button' class='btn full "+(r.hot?"g":"")+"' data-buy='"+esc(r.n)+"' data-price='"+esc(r.p)+"'>Beli "+esc(r.n)+"</button>"))})})}
+function renderCoins(id){put(id,function(b){C.coins.forEach(function(c){b.appendChild(el("div","box vote","<div><b>"+esc(c[0])+"</b><div class='val'>"+esc(c[1])+"</div></div><button type='button' class='btn d' data-buy='"+esc(c[0])+"' data-price='"+esc(c[1])+"'>Beli</button>"))})})}
+function renderPays(id){put(id,function(b){C.pays.forEach(function(p){b.appendChild(el("div","box pay","<div class='ico'>"+esc(p[0])+"</div><div><b>"+esc(p[1])+"</b><small>"+(p[3]?"a.n. "+esc(p[3]):"Bayar manual")+"</small></div>"))})})}
 function renderVotes(id){put(id,function(b){C.votes.forEach(function(v){b.appendChild(el("div","box vote","<b>"+esc(v[0])+"</b><a class='btn d' href='"+esc(v[1])+"'>Vote</a>"))})})}
 function renderNews(id){put(id,function(b){C.news.forEach(function(n){b.appendChild(el("article","box news","<time>"+esc(n[0])+"</time><h3>"+esc(n[1])+"</h3><p>"+esc(n[2])+"</p>"))})})}
 function face(s){var p=s[3]||"";if(/^mc:/i.test(p))p="https://mc-heads.net/avatar/"+encodeURIComponent(p.slice(3).trim())+"/128";return p?"<img class='face' alt='' src='"+esc(p)+"'>":"<span class='face' style='background:"+esc(s[2])+"'></span>"}
@@ -61,3 +61,40 @@ var cfgP=sb?sb.from("site_config").select("data").eq("id",1).maybeSingle().then(
  [].forEach.call(document.querySelectorAll("[data-ip]"),function(e){e.textContent=C.ip});
  [].forEach.call(document.querySelectorAll("[data-dc]"),function(e){e.href=C.discord})
 }).catch(function(){}):Promise.resolve();
+
+/* checkout manual (DANA, GoPay, dll) */
+function copyTxt(v){function fb(){var a=document.createElement("textarea");a.value=v;document.body.appendChild(a);a.select();try{document.execCommand("copy")}catch(e){}a.remove();toast("Tersalin!")}
+ try{navigator.clipboard.writeText(v).then(function(){toast("Tersalin!")},fb)}catch(e){fb()}}
+function openBuy(item,price){
+ if(!C.pays||!C.pays.length){location.href=C.discord;return}
+ var old=$("buy");if(old)old.remove();
+ var m=el("div","modal"),sel=0;m.id="buy";m.setAttribute("role","dialog");m.setAttribute("aria-modal","true");m.setAttribute("aria-label","Beli "+item);
+ m.innerHTML="<div class='box'><h3 class='px' style='font-size:20px'>Beli "+esc(item)+"</h3><div class='val' style='font-size:22px;margin:6px 0 16px'>"+esc(price)+"</div>"+
+  "<label class='field'><span>Nickname Minecraft</span><input id='bn' maxlength='16' placeholder='contoh: Steve_123' autocomplete='off'></label>"+
+  "<div class='field'><span>Metode pembayaran</span><div class='pm' id='bm' role='tablist'></div></div><div class='acct' id='ba'></div><div id='bx'></div>"+
+  "<div class='bact'><button type='button' class='btn' id='bok'>Saya sudah bayar</button><button type='button' class='btn d' id='bno'>Batal</button></div></div>";
+ document.body.appendChild(m);
+ function close(){m.remove();document.removeEventListener("keydown",key)}
+ function key(e){if(e.key=="Escape")close()}
+ document.addEventListener("keydown",key);
+ m.onclick=function(e){if(e.target==m)close()};
+ $("bno").onclick=close;
+ function pick(i){sel=i;[].forEach.call($("bm").children,function(x,j){x.setAttribute("aria-selected",j==i)});var p=C.pays[i];
+  $("ba").innerHTML="<small>Transfer tepat "+esc(price)+" ke "+esc(p[1])+":</small><div class='num'>"+esc(p[2])+"</div>"+(p[3]?"<small>a.n. "+esc(p[3])+"</small>":"")+"<button type='button' class='btn d' id='bc' style='margin-top:10px;padding:8px 14px;font-size:13px'>Salin nomor</button>";
+  $("bc").onclick=function(){var v=String(p[2]);copyTxt(/^[\d\s-]+$/.test(v)?v.replace(/[\s-]/g,""):v)}}
+ C.pays.forEach(function(p,i){var b=el("button","tab",esc(p[0])+" "+esc(p[1]));b.type="button";b.setAttribute("role","tab");b.onclick=function(){pick(i)};$("bm").appendChild(b)});
+ pick(0);
+ if(sb)sb.auth.getSession().then(function(r){var s=r.data&&r.data.session;if(s)sb.from("profiles").select("mc_name").eq("id",s.user.id).maybeSingle().then(function(x){var n=$("bn");if(n&&x.data&&x.data.mc_name&&!n.value)n.value=x.data.mc_name})});
+ $("bn").focus();
+ $("bok").onclick=function(){var n=$("bn").value.trim(),x=$("bx");
+  if(!/^[A-Za-z0-9_]{3,16}$/.test(n)){x.innerHTML="<div class='alert err'>Nickname 3–16 karakter: huruf, angka, atau garis bawah.</div>";return}
+  var p=C.pays[sel],subj="Pesanan: "+item+" ("+price+")",txt=subj+"\nNickname: "+n+"\nMetode: "+p[1]+"\nStatus: sudah transfer, bukti pembayaran menyusul.";
+  $("bok").disabled=true;
+  function fallback(){x.innerHTML="<div class='alert info'>Salin pesanan di bawah, lalu kirim bersama bukti pembayaran ke Discord kami. Atau <a href='login.html' style='text-decoration:underline'>masuk</a> agar pesanan tercatat otomatis.</div><textarea readonly id='bt'>"+esc(txt)+"</textarea><div class='bact'><button type='button' class='btn d' id='bcp'>Salin pesanan</button><a class='btn p' href='"+esc(C.discord)+"'>Buka Discord</a></div>";$("bcp").onclick=function(){copyTxt(txt)};$("bok").hidden=true}
+  if(!sb){fallback();return}
+  sb.auth.getSession().then(function(r){var s=r.data&&r.data.session;if(!s){fallback();return}
+   sb.from("tickets").insert({subject:subj,message:txt}).then(function(r2){
+    if(r2.error){$("bok").disabled=false;x.innerHTML="<div class='alert err'>"+esc(r2.error.message)+"</div>";return}
+    x.innerHTML="<div class='alert ok'>Pesanan tercatat sebagai tiket di halaman Akun. Kirim bukti pembayaran (screenshot) lewat Discord agar cepat diproses.</div><a class='btn p full' href='"+esc(C.discord)+"'>Kirim bukti di Discord</a>";
+    $("bok").hidden=true;$("bno").textContent="Tutup"})})}}
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-buy]");if(b){e.preventDefault();openBuy(b.getAttribute("data-buy"),b.getAttribute("data-price"))}});
