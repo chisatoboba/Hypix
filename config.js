@@ -1,4 +1,3 @@
-
 /* ===== UBAH DATA DI SINI SAJA ===== */
 var C={
  name:"Hypix Reborn", ip:"play.craftnusa.id", javaPort:25565, bedrockPort:19132, version:"1.21",
@@ -18,17 +17,13 @@ var C={
   {n:"MVP",p:"Rp60.000",c:"#5cc8ff",hot:1,f:["Semua fitur VIP","Home 15 lokasi","Fly di lobi","Claim 2x lebih luas","Antrian prioritas"]},
   {n:"LEGEND",p:"Rp120.000",c:"#ffc83d",f:["Semua fitur MVP","Home 30 lokasi","Kit mingguan LEGEND","Pet kosmetik eksklusif","Akses beta fitur baru"]}
  ],
+ /* Pembayaran manual sementara: [ikon, metode, nomor/rekening, atas nama]. GANTI nomor di bawah dengan milikmu. */
  pays:[
-  ["📷","QRIS","Semua e-wallet dan m-banking"],
-  ["💚","GoPay","Bayar lewat aplikasi Gojek"],
-  ["💜","OVO","Saldo OVO atau OVO Points"],
-  ["💙","DANA","Saldo DANA"],
-  ["🧡","ShopeePay","Saldo ShopeePay"],
-  ["🏦","Transfer Bank","Virtual Account BCA, BRI, Mandiri, BNI, Permata"],
-  ["🏪","Alfamart / Indomaret","Bayar tunai di kasir"],
-  ["📞","Pulsa","Telkomsel dan XL"],
-  ["💳","Kartu Kredit / Debit","Visa dan Mastercard"],
-  ["🌐","PayPal","Untuk pemain luar negeri"]
+  ["💙","DANA","0812-0000-0000","Nama Pemilik"],
+  ["💚","GoPay","0812-0000-0000","Nama Pemilik"],
+  ["💜","OVO","0812-0000-0000","Nama Pemilik"],
+  ["🧡","ShopeePay","0812-0000-0000","Nama Pemilik"],
+  ["🏦","Transfer BCA","1234567890","Nama Pemilik"]
  ],
  coins:[["500 Koin","Rp10.000"],["1.200 Koin","Rp20.000"],["3.000 Koin","Rp45.000"],["8.000 Koin","Rp110.000"]],
  lb:{
