@@ -17,8 +17,9 @@ var C={
   {n:"MVP",p:"Rp60.000",c:"#5cc8ff",hot:1,f:["Semua fitur VIP","Home 15 lokasi","Fly di lobi","Claim 2x lebih luas","Antrian prioritas"]},
   {n:"LEGEND",p:"Rp120.000",c:"#ffc83d",f:["Semua fitur MVP","Home 30 lokasi","Kit mingguan LEGEND","Pet kosmetik eksklusif","Akses beta fitur baru"]}
  ],
- /* Pembayaran manual sementara: [ikon, metode, nomor/rekening, atas nama]. GANTI nomor di bawah dengan milikmu. */
+ /* Pembayaran manual sementara: [ikon, metode, nomor/rekening, atas nama, foto QR (opsional)]. GANTI nomor di bawah dengan milikmu. */
  pays:[
+  ["📷","QRIS","","Nama Toko","qris.jpg"],
   ["💙","DANA","0812-0000-0000","Nama Pemilik"],
   ["💚","GoPay","0812-0000-0000","Nama Pemilik"],
   ["💜","OVO","0812-0000-0000","Nama Pemilik"],
