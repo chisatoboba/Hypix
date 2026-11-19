@@ -97,3 +97,10 @@ img.face{object-fit:cover;background:var(--n3)}
 .staff .face{display:block;width:min(100%,170px);height:auto;aspect-ratio:1;margin:0 auto 14px;border-width:3px}
 
 .pay{display:flex;gap:14px;align-items:center;padding:14px 16px}.pay b{display:block}.pay small{color:var(--mu);display:block;line-height:1.4}.pay .ico{flex:none}
+
+.modal{position:fixed;inset:0;z-index:90;background:rgba(5,6,26,.85);display:grid;place-items:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));overflow:auto}
+.modal>.box{width:100%;max-width:460px;padding:20px;max-height:100%;overflow:auto}
+.pm{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}.pm .tab{text-align:left;white-space:normal}
+.acct{background:var(--n0);border:3px solid var(--bd);padding:12px 14px;margin:0 0 14px}.acct small{color:var(--mu);display:block}.acct .num{font-family:Silkscreen,monospace;font-size:20px;margin:4px 0;overflow-wrap:anywhere;color:var(--gold)}
+.bact{display:flex;gap:12px;flex-wrap:wrap}.bact .btn{flex:1;min-width:130px}
+.modal textarea{min-height:110px;margin-bottom:12px}
