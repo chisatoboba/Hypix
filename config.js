@@ -5,12 +5,12 @@ var C={
  /* Isi dari Supabase: Project Settings → API (lihat README.md) */
  supabaseUrl:"https://zehmmuwcpxqeqablrmij.supabase.co", supabaseKey:"sb_publishable_K2Uj9KWf-MmZ6auOX1SVyw_-7-hwuEM",
  modes:[
-  ["⛏️","Survival","Claim tanahmu, bangun rumah, dan berdagang. Anti-grief aktif."],
-  ["☁️","Skyblock","Mulai dari satu pulau, naikkan level, dan kuasai ekonomi."],
-  ["🛏️","BedWars","Pertahankan bed, hancurkan lawan. Ada ranked dan custom match."],
-  ["⚔️","PvP Arena","Duel 1v1, kit battle, dan turnamen mingguan berhadiah."],
-  ["🏰","Roleplay","Kota, pekerjaan, dan cerita bersama komunitas."],
-  ["🎉","Event","Build battle, parkour, dan hunt harian di lobi."]
+  ["🏰","Kerajaan & Wilayah","Bangun kerajaan, kuasai wilayah, dan tentukan nasib rakyatmu."],
+  ["⚔️","Perang Antar-Kerajaan","Pengepungan, aliansi, dan diplomasi. Perang punya aturan dan hadiah."],
+  ["👑","Roleplay Bangsawan","Jadi raja, bangsawan, ksatria, atau rakyat jelata dengan ceritamu sendiri."],
+  ["⚒️","Ekonomi & Dagang","Pandai besi, petani, saudagar. Bangun pasar dan kuasai perdagangan."],
+  ["📜","Quest & Kisah","Misi dari kerajaan, dungeon, dan cerita musiman bersama staf."],
+  ["🎉","Festival & Turnamen","Turnamen ksatria, pesta kerajaan, dan event mingguan."]
  ],
  ranks:[
   {n:"VIP",p:"Rp25.000",c:"#3ddc84",f:["Prefix [VIP] di chat","Home 5 lokasi","Kit harian VIP","Warna chat"]},
@@ -26,6 +26,9 @@ var C={
   ["🧡","ShopeePay","0812-0000-0000","Nama Pemilik"],
   ["🏦","Transfer BCA","1234567890","Nama Pemilik"]
  ],
+ /* Link bayar DANA Bisnis per paket: { "Nama metode": { "Nama paket": "https://link-pembayaran" } }.
+    Nama metode harus sama dengan di atas (pays), nama paket sama dengan nama rank/koin. Kosongkan jika belum ada. */
+ payLinks:{"DANA":{"VIP":"","MVP":"","LEGEND":"","500 Koin":"","1.200 Koin":"","3.000 Koin":"","8.000 Koin":""}},
  coins:[["500 Koin","Rp10.000"],["1.200 Koin","Rp20.000"],["3.000 Koin","Rp45.000"],["8.000 Koin","Rp110.000"]],
  lb:{
   "Level":[["Rizky_Pro","Lv 148"],["SiAnjay","Lv 141"],["NaraBlox","Lv 133"],["AyuCraft","Lv 127"],["BudiMC","Lv 120"]],
@@ -39,7 +42,7 @@ var C={
   ["10 Nov 2026","Turnamen BedWars Season 2","Total hadiah rank LEGEND dan 500 koin. Daftar lewat Discord."],
   ["02 Nov 2026","Sistem claim lebih luas","Claim awal kini 2x lebih besar untuk semua pemain."]
  ],
- staff:[["Owner","Kak_Fadil","#ff5d8f"],["Admin","Mbak_Sari","#ffc83d"],["Moderator","Dimas_Mod","#5cc8ff"],["Helper","Putri_Help","#3ddc84"]],
+ staff:[["Raja","Kak_Fadil","#ff5d8f"],["Panglima","Mbak_Sari","#ffc83d"],["Ksatria","Dimas_Mod","#5cc8ff"],["Pengawal","Putri_Help","#3ddc84"]],
  faq:[
   ["Apakah server ini gratis?","Ya, semua mode bisa dimainkan gratis. Rank hanya memberi keuntungan kosmetik dan kenyamanan."],
   ["Bisa main lewat HP (Bedrock)?","Bisa. Pakai alamat yang sama dan port Bedrock di halaman Info."],
@@ -47,5 +50,5 @@ var C={
   ["Bagaimana melapor pemain curang?","Buka tiket di halaman Akun dan sertakan nama pemain serta bukti screenshot atau video."],
   ["Apakah rank bisa hangus?","Tidak. Rank bersifat permanen selama akunmu tidak terkena banned."]
  ],
- rules:["Hormati semua pemain. Tidak ada toxic, spam, atau SARA.","Dilarang memakai cheat, x-ray, atau macro.","Dilarang grief atau mencuri bangunan pemain lain.","Jangan membagikan password ke siapa pun.","Laporkan bug, jangan dimanfaatkan.","Keputusan staf final setelah peninjauan."]
+ rules:["Hormati semua pemain. Tidak ada toxic, spam, atau SARA.","Dilarang memakai cheat, x-ray, atau macro.","Dilarang grief atau mencuri bangunan pemain lain.","Jangan membagikan password ke siapa pun.","Laporkan bug, jangan dimanfaatkan.","Patuhi peran (in-character) di area roleplay dan hindari metagaming.","Keputusan staf final setelah peninjauan."]
 };
