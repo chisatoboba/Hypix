@@ -9,7 +9,7 @@ var D,cur,bad=false,$m=$("msg");
 function note(t,c){$m.innerHTML=t?"<div class='alert "+c+"'>"+esc(t)+"</div>":""}
 var G=[["name","Nama server"],["ip","IP server"],["javaPort","Port Java"],["bedrockPort","Port Bedrock"],["version","Versi"],["discord","Link Discord"],["tiktok","Link TikTok"],["youtube","Link YouTube"],["store","Link pembayaran (Store)"]];
 var S={"Umum":0,"Mode":"modes","Rank":"ranks","Koin":"coins","Pembayaran":"pays","Peringkat":"lb","Vote":"votes","Berita":"news","Staf":"staff","FAQ":"faq","Aturan":"rules"};
-var H={modes:["Ikon","Nama","Deskripsi"],coins:["Paket","Harga"],pays:["Ikon","Metode","Keterangan"],votes:["Nama","Link"],news:["Tanggal","Judul","Isi"],staff:["Jabatan (Owner, Developer, Admin, ...)","Nama","Warna (#hex)","Foto: link gambar, atau mc:NamaMinecraft"],faq:["Pertanyaan","Jawaban"],rules:["Aturan"]};
+var H={modes:["Ikon","Nama","Deskripsi"],coins:["Paket","Harga"],pays:["Ikon","Metode","Nomor / rekening","Atas nama"],votes:["Nama","Link"],news:["Tanggal","Judul","Isi"],staff:["Jabatan (Owner, Developer, Admin, ...)","Nama","Warna (#hex)","Foto: link gambar, atau mc:NamaMinecraft"],faq:["Pertanyaan","Jawaban"],rules:["Aturan"]};
 function show(l){cur=S[l];bad=false;note("");var b=$("ed");b.innerHTML="";
  if(!cur){G.forEach(function(g){var f=el("label","field","<span>"+g[1]+"</span>"),n=el("input");n.value=D[g[0]];n.oninput=function(){D[g[0]]=typeof C[g[0]]=="number"?Number(n.value)||0:n.value};f.appendChild(n);b.appendChild(f)});return}
  if(cur=="ranks"||cur=="lb"){var t=el("textarea");t.style.cssText="min-height:380px;font-family:monospace";t.value=JSON.stringify(D[cur],null,1);var k=cur;t.oninput=function(){try{D[k]=JSON.parse(t.value);bad=false}catch(e){bad=true}};
