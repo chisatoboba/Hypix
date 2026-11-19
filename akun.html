@@ -24,6 +24,27 @@ function start(u){
  $("out").onclick=function(){sb.auth.signOut().then(function(){location.href="index.html"})};
  $("tf").onsubmit=function(e){e.preventDefault();var s=$("ts").value.trim(),m=$("tm").value.trim();if(!s||!m)return;
   sb.from("tickets").insert({subject:s,message:m}).then(function(r){if(r.error)return note(r.error.message,"err");$("ts").value=$("tm").value="";note("Tiket terkirim. Staf akan membalas lewat Discord atau email.","ok");loadT()})};
- function loadT(){sb.from("tickets").select("id,subject,status,created_at").order("created_at",{ascending:false}).then(function(r){
-  var d=r.data||[];$("tl").innerHTML=d.length?d.map(function(t){return"<div class='box tk'><b>"+esc(t.subject)+"</b><small>#"+t.id+" · "+esc(t.status=="open"?"Terbuka":"Selesai")+" · "+new Date(t.created_at).toLocaleDateString("id-ID")+"</small></div>"}).join(""):"<div style='color:var(--mu)'>Belum ada tiket.</div>"})}
+ function shrink(f,cb){var im=new Image();im.onload=function(){var s=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);c.toBlob(cb,"image/jpeg",.85)};im.onerror=function(){cb(null)};im.src=URL.createObjectURL(f)}
+ function loadT(){sb.from("tickets").select("id,subject,message,status,created_at").order("created_at",{ascending:false}).then(function(r){
+  var d=r.data||[],box=$("tl");box.innerHTML="";
+  if(!d.length){box.innerHTML="<div style='color:var(--mu)'>Belum ada tiket.</div>";return}
+  d.forEach(function(t,i){
+   var dt=el("details","box tk");
+   dt.innerHTML="<summary><span><b>"+esc(t.subject)+"</b><small>#"+esc(t.id)+" · "+esc(t.status=="open"?"Terbuka":"Selesai")+" · "+new Date(t.created_at).toLocaleDateString("id-ID")+"</small></span></summary><div class='tkb'><p class='msg'>"+esc(t.message)+"</p><h4 class='px'>Bukti transfer</h4><div class='pf'><small>Memuat…</small></div><div class='st'></div><label class='btn d full upl'>Unggah bukti transfer<input type='file' accept='image/*' hidden></label></div>";
+   box.appendChild(dt);
+   var inp=dt.querySelector("input[type=file]"),pf=dt.querySelector(".pf"),st=dt.querySelector(".st");
+   function say(m,c){st.innerHTML="<div class='alert "+c+"'>"+esc(m)+"</div>"}
+   function proofs(){sb.storage.from("bukti").list(u.id,{limit:100,sortBy:{column:"name",order:"desc"}}).then(function(x){
+    if(x.error){pf.innerHTML="<small>"+esc(x.error.message)+"</small>";return}
+    var f=(x.data||[]).filter(function(o){return o.name.indexOf(t.id+"-")==0});
+    if(!f.length){pf.innerHTML="<small>Belum ada bukti diunggah.</small>";return}
+    sb.storage.from("bukti").createSignedUrls(f.map(function(o){return u.id+"/"+o.name}),3600).then(function(y){
+     pf.innerHTML=(y.data||[]).map(function(s){return s.signedUrl?"<a href='"+esc(s.signedUrl)+"' target='_blank' rel='noopener'><img class='proof' alt='Bukti transfer' src='"+esc(s.signedUrl)+"'></a>":""}).join("")})})}
+   dt.addEventListener("toggle",function(){if(dt.open&&!dt.dataset.l){dt.dataset.l=1;proofs()}});
+   inp.onchange=function(){var f=inp.files[0];inp.value="";if(!f)return;say("Mengunggah…","info");
+    shrink(f,function(bl){if(!bl)return say("File itu bukan gambar yang valid.","err");
+     sb.storage.from("bukti").upload(u.id+"/"+t.id+"-"+Date.now()+".jpg",bl,{contentType:"image/jpeg"}).then(function(x){
+      if(x.error)return say("Gagal unggah: "+x.error.message,"err");
+      say("Bukti terunggah. Staf akan memverifikasi pembayaranmu.","ok");toast("Terunggah!");proofs()})})};
+   if(i==0&&location.hash=="#bukti")dt.open=true})})}
  loadT()}</script></body></html>
